@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.OpportunityMapper">
+    
+    <resultMap type="Opportunity" id="OpportunityResult">
+        <result property="opportunityId"    column="opportunity_id"    />
+        <result property="clientId"    column="client_id"    />
+        <result property="opportunityDescription"    column="opportunity_description"    />
+        <result property="salesperson"    column="salesperson"    />
+        <result property="opportunitySource"    column="opportunity_source"    />
+        <result property="opportunityDate"    column="opportunity_date"    />
+        <result property="projectEstimatedAmount"    column="project_estimated_amount"    />
+        <result property="productEstimatedAmount"    column="product_estimated_amount"    />
+        <result property="serviceEstimatedAmount"    column="service_estimated_amount"    />
+        <result property="projectEstimatedDate"    column="project_estimated_date"    />
+        <association property="clients"  javaType="BusinessClients"  resultMap="BusinessClientsResult" />
+    </resultMap>
+
+    <resultMap type="BusinessClients" id="BusinessClientsResult">
+        <id property="clientId"    column="client_id"    />
+        <result property="clientName"    column="client_name"    />
+        <result property="status"    column="client_status" />
+    </resultMap>
+
+    <sql id="selectOpportunityVo">
+        select o.opportunity_id, o.client_id, o.opportunity_description, o.salesperson, o.opportunity_source, o.opportunity_date, o.project_estimated_amount, o.product_estimated_amount, o.service_estimated_amount, o.project_estimated_date,
+               c.client_name as client_name
+        from opportunity o
+             left join business_clients c on o.client_id = c.client_id
+    </sql>
+
+    <select id="selectOpportunityList" parameterType="Opportunity" resultMap="OpportunityResult">
+        <include refid="selectOpportunityVo"/>
+        <where>  
+            <if test="clientId != null "> and client_id = #{clientId}</if>
+            <if test="opportunityDescription != null  and opportunityDescription != ''"> and opportunity_description = #{opportunityDescription}</if>
+            <if test="salesperson != null  and salesperson != ''"> and salesperson = #{salesperson}</if>
+            <if test="opportunitySource != null  and opportunitySource != ''"> and opportunity_source = #{opportunitySource}</if>
+            <if test="opportunityDate != null "> and opportunity_date = #{opportunityDate}</if>
+            <if test="projectEstimatedAmount != null "> and project_estimated_amount = #{projectEstimatedAmount}</if>
+            <if test="productEstimatedAmount != null "> and product_estimated_amount = #{productEstimatedAmount}</if>
+            <if test="serviceEstimatedAmount != null "> and service_estimated_amount = #{serviceEstimatedAmount}</if>
+            <if test="projectEstimatedDate != null "> and project_estimated_date = #{projectEstimatedDate}</if>
+            <if test="clients.clientName != null "> and c.client_name like concat('%', #{clients.clientName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectOpportunityByOpportunityId" parameterType="Long" resultMap="OpportunityResult">
+        <include refid="selectOpportunityVo"/>
+        where opportunity_id = #{opportunityId}
+    </select>
+        
+    <insert id="insertOpportunity" parameterType="Opportunity" useGeneratedKeys="true" keyProperty="opportunityId">
+        <selectKey keyProperty="clientId" resultType="long" order="BEFORE">
+            SELECT client_id FROM business_clients WHERE client_name = #{clients.clientName}
+        </selectKey>
+        insert into opportunity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="clientId != null">client_id,</if>
+            <if test="opportunityDescription != null">opportunity_description,</if>
+            <if test="salesperson != null">salesperson,</if>
+            <if test="opportunitySource != null">opportunity_source,</if>
+            <if test="opportunityDate != null">opportunity_date,</if>
+            <if test="projectEstimatedAmount != null">project_estimated_amount,</if>
+            <if test="productEstimatedAmount != null">product_estimated_amount,</if>
+            <if test="serviceEstimatedAmount != null">service_estimated_amount,</if>
+            <if test="projectEstimatedDate != null">project_estimated_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="clientId != null">#{clientId},</if>
+            <if test="opportunityDescription != null">#{opportunityDescription},</if>
+            <if test="salesperson != null">#{salesperson},</if>
+            <if test="opportunitySource != null">#{opportunitySource},</if>
+            <if test="opportunityDate != null">#{opportunityDate},</if>
+            <if test="projectEstimatedAmount != null">#{projectEstimatedAmount},</if>
+            <if test="productEstimatedAmount != null">#{productEstimatedAmount},</if>
+            <if test="serviceEstimatedAmount != null">#{serviceEstimatedAmount},</if>
+            <if test="projectEstimatedDate != null">#{projectEstimatedDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOpportunity" parameterType="Opportunity">
+        update opportunity
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="clientId != null">client_id = #{clientId},</if>
+            <if test="opportunityDescription != null">opportunity_description = #{opportunityDescription},</if>
+            <if test="salesperson != null">salesperson = #{salesperson},</if>
+            <if test="opportunitySource != null">opportunity_source = #{opportunitySource},</if>
+            <if test="opportunityDate != null">opportunity_date = #{opportunityDate},</if>
+            <if test="projectEstimatedAmount != null">project_estimated_amount = #{projectEstimatedAmount},</if>
+            <if test="productEstimatedAmount != null">product_estimated_amount = #{productEstimatedAmount},</if>
+            <if test="serviceEstimatedAmount != null">service_estimated_amount = #{serviceEstimatedAmount},</if>
+            <if test="projectEstimatedDate != null">project_estimated_date = #{projectEstimatedDate},</if>
+        </trim>
+        where opportunity_id = #{opportunityId}
+    </update>
+
+    <delete id="deleteOpportunityByOpportunityId" parameterType="Long">
+        delete from opportunity where opportunity_id = #{opportunityId}
+    </delete>
+
+    <delete id="deleteOpportunityByOpportunityIds" parameterType="String">
+        delete from opportunity where opportunity_id in 
+        <foreach item="opportunityId" collection="array" open="(" separator="," close=")">
+            #{opportunityId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.AfterSalesMapper">
+    
+    <resultMap type="AfterSales" id="AfterSalesResult">
+        <result property="afterSalesId"    column="after_sales_id"    />
+        <result property="clientId"    column="client_id"    />
+
+        <result property="afterSalesDescription"    column="after_sales_description"    />
+        <result property="afterSalesResult"    column="after_sales_result"    />
+        <result property="creationTime"    column="creation_time"    />
+    </resultMap>
+
+    <sql id="selectAfterSalesVo">
+        select after_sales_id, opportunity_id, after_sales_description, after_sales_result, creation_time from after_sales
+    </sql>
+
+    <select id="selectAfterSalesList" parameterType="AfterSales" resultMap="AfterSalesResult">
+        <include refid="selectAfterSalesVo"/>
+        <where>  
+            <if test="opportunityId != null "> and opportunity_id = #{opportunityId}</if>
+            <if test="afterSalesDescription != null  and afterSalesDescription != ''"> and after_sales_description = #{afterSalesDescription}</if>
+            <if test="afterSalesResult != null  and afterSalesResult != ''"> and after_sales_result = #{afterSalesResult}</if>
+            <if test="creationTime != null "> and creation_time = #{creationTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectAfterSalesByAfterSalesId" parameterType="Long" resultMap="AfterSalesResult">
+        <include refid="selectAfterSalesVo"/>
+        where after_sales_id = #{afterSalesId}
+    </select>
+        
+    <insert id="insertAfterSales" parameterType="AfterSales" useGeneratedKeys="true" keyProperty="afterSalesId">
+        insert into after_sales
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="opportunityId != null">opportunity_id,</if>
+            <if test="afterSalesDescription != null">after_sales_description,</if>
+            <if test="afterSalesResult != null">after_sales_result,</if>
+            <if test="creationTime != null">creation_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="opportunityId != null">#{opportunityId},</if>
+            <if test="afterSalesDescription != null">#{afterSalesDescription},</if>
+            <if test="afterSalesResult != null">#{afterSalesResult},</if>
+            <if test="creationTime != null">#{creationTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAfterSales" parameterType="AfterSales">
+        update after_sales
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="opportunityId != null">opportunity_id = #{opportunityId},</if>
+            <if test="afterSalesDescription != null">after_sales_description = #{afterSalesDescription},</if>
+            <if test="afterSalesResult != null">after_sales_result = #{afterSalesResult},</if>
+            <if test="creationTime != null">creation_time = #{creationTime},</if>
+        </trim>
+        where after_sales_id = #{afterSalesId}
+    </update>
+
+    <delete id="deleteAfterSalesByAfterSalesId" parameterType="Long">
+        delete from after_sales where after_sales_id = #{afterSalesId}
+    </delete>
+
+    <delete id="deleteAfterSalesByAfterSalesIds" parameterType="String">
+        delete from after_sales where after_sales_id in 
+        <foreach item="afterSalesId" collection="array" open="(" separator="," close=")">
+            #{afterSalesId}
+        </foreach>
+    </delete>
+
+</mapper>

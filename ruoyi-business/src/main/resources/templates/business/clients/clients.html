@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('伙伴列列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>伙伴名称：</label>
+                                <input type="text" name="clientName"/>
+                            </li>
+                            <li>
+                                <label>行业</label>
+                                <input type="text" name="industryId"/>
+                            </li>
+                            <li>
+                                <label>电话：</label>
+                                <input type="text" name="tel"/>
+                            </li>
+                            <li>
+                                <label>联系人：</label>
+                                <input type="text" name="contact"/>
+                            </li>
+                            <li>
+                                <label>手机：</label>
+                                <input type="text" name="mobile"/>
+                            </li>
+                            <li>
+                                <label>签约公司：</label>
+                                <input type="text" name="deptId"/>
+                            </li>
+                            <li>
+                                <label>销售人员：</label>
+                                <input type="text" name="loginName"/>
+                            </li>
+                            <li>
+                                <label>售后服务：</label>
+                                <input type="text" name="support"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="business:clients:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="business:clients:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:clients:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="business:clients:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('business:clients:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('business:clients:remove')}]];
+        var prefix = ctx + "business/clients";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "伙伴列",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'clientId',
+                    title: '序号',
+                    visible: false
+                },
+                {
+                    field: 'clientName',
+                    title: '伙伴名称'
+                },
+                {
+                    field: 'industryId',
+                    title: '行业(Ref: gb_industry)'
+                },
+                {
+                    field: 'website',
+                    title: '网址'
+                },
+                {
+                    field: 'tel',
+                    title: '电话'
+                },
+                {
+                    field: 'contact',
+                    title: '联系人'
+                },
+                {
+                    field: 'mobile',
+                    title: '手机'
+                },
+                {
+                    field: 'deptId',
+                    title: '签约公司'
+                },
+                {
+                    field: 'loginName',
+                    title: '销售人员'
+                },
+                {
+                    field: 'support',
+                    title: '售后服务'
+                },
+                {
+                    field: 'status',
+                    title: '当前状态'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.clientId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.clientId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        var more = [];
+                        more.push("<a class='btn btn-default btn-xs " + editFlag + "' href='javascript:void(0)' onclick='authDataScope(" + row.roleId + ")'><i class='fa fa-check-square-o'></i>数据权限</a> ");
+                        more.push("<a class='btn btn-default btn-xs " + editFlag + "' href='javascript:void(0)' onclick='authUser(" + row.roleId + ")'><i class='fa fa-user'></i>分配用户</a>");
+                        actions.push('<a tabindex="0" class="btn btn-info btn-xs" role="button" data-container="body" data-placement="left" data-toggle="popover" data-html="true" data-trigger="hover" data-content="' + more.join('') + '"><i class="fa fa-chevron-circle-right"></i>更多操作</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.SchedulesMapper">
+    
+    <resultMap type="Schedules" id="SchedulesResult">
+        <result property="scheduleId"    column="schedule_id"    />
+        <result property="clientId"    column="client_id"    />
+        <result property="scheduleDate"    column="schedule_date"    />
+        <result property="scheduleDescription"    column="schedule_description"    />
+        <association property="clients"  javaType="BusinessClients"  resultMap="BusinessClientsResult" />
+    </resultMap>
+
+    <resultMap type="BusinessClients" id="BusinessClientsResult">
+        <id property="clientId"    column="client_id"    />
+        <result property="clientName"    column="client_name"    />
+        <result property="status"    column="client_status" />
+    </resultMap>
+
+    <sql id="selectSchedulesVo">
+        select s.schedule_id, s.client_id, s.schedule_date, s.schedule_description,
+               c.client_name as client_name
+        from schedules s
+            left join business_clients c on s.client_id = c.client_id
+    </sql>
+
+    <select id="selectSchedulesList" parameterType="Schedules" resultMap="SchedulesResult">
+        <include refid="selectSchedulesVo"/>
+        <where>
+            <if test="clientId != null "> and s.client_id = #{clientId}</if>
+            <if test="scheduleDate != null "> and s.schedule_date = #{scheduleDate}</if>
+            <if test="scheduleDescription != null  and scheduleDescription != ''"> and s.schedule_description = #{scheduleDescription}</if>
+            <if test="clients.clientName != null "> and c.client_name like concat('%', #{clients.clientName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectSchedulesByScheduleId" parameterType="Long" resultMap="SchedulesResult">
+        <include refid="selectSchedulesVo"/>
+        where s.schedule_id = #{scheduleId}
+    </select>
+
+    <insert id="insertSchedules" parameterType="Schedules" useGeneratedKeys="true" keyProperty="scheduleId">
+        <selectKey keyProperty="clientId" resultType="long" order="BEFORE">
+            SELECT client_id FROM business_clients WHERE client_name = #{clients.clientName}
+        </selectKey>
+        insert into schedules
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="clientId != null">client_id,</if>
+            <if test="scheduleDate != null">schedule_date,</if>
+            <if test="scheduleDescription != null">schedule_description,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="clientId != null">#{clientId},</if>
+            <if test="scheduleDate != null">#{scheduleDate},</if>
+            <if test="scheduleDescription != null">#{scheduleDescription},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSchedules" parameterType="Schedules">
+        update schedules
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="clientId != null">client_id = #{clientId},</if>
+            <if test="scheduleDate != null">schedule_date = #{scheduleDate},</if>
+            <if test="scheduleDescription != null">schedule_description = #{scheduleDescription},</if>
+        </trim>
+        where schedule_id = #{scheduleId}
+    </update>
+
+    <delete id="deleteSchedulesByScheduleId" parameterType="Long">
+        delete from schedules where schedule_id = #{scheduleId}
+    </delete>
+
+    <delete id="deleteSchedulesByScheduleIds" parameterType="String">
+        delete from schedules where schedule_id in
+        <foreach item="scheduleId" collection="array" open="(" separator="," close=")">
+            #{scheduleId}
+        </foreach>
+    </delete>
+
+</mapper>

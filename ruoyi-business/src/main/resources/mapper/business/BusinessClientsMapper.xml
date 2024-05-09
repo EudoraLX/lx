@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.BusinessClientsMapper">
+    
+    <resultMap type="BusinessClients" id="BusinessClientsResult">
+        <result property="clientId"    column="client_id"    />
+        <result property="clientName"    column="client_name"    />
+        <result property="clientType"    column="client_type"    />
+        <result property="industryId"    column="industry_id"    />
+        <result property="logo"    column="logo"    />
+        <result property="website"    column="website"    />
+        <result property="address"    column="address"    />
+        <result property="tel"    column="tel"    />
+        <result property="taxCode"    column="tax_code"    />
+        <result property="bankAccount"    column="bank_account"    />
+        <result property="bank"    column="bank"    />
+        <result property="contact"    column="contact"    />
+        <result property="mobile"    column="mobile"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="source"    column="source"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="loginName"    column="login_name"    />
+        <result property="support"    column="support"    />
+        <result property="status"    column="status"    />
+        <result property="opputunityDate"    column="opputunity_date"    />
+        <result property="projectEta"    column="project_eta"    />
+        <result property="productEta"    column="product_eta"    />
+        <result property="serviceEta"    column="service_eta"    />
+        <result property="projectEtdate"    column="project_etdate"    />
+    </resultMap>
+
+    <sql id="selectBusinessClientsVo">
+        select client_id, client_name, client_type, industry_id, logo, website, address, tel, tax_code, bank_account, bank, contact, mobile, remarks, create_time, update_time, create_by, update_by, source, dept_id, login_name, support, status, opputunity_date, project_eta, product_eta, service_eta, project_etdate from business_clients
+    </sql>
+
+    <select id="selectBusinessClientsList" parameterType="BusinessClients" resultMap="BusinessClientsResult">
+        <include refid="selectBusinessClientsVo"/>
+        <where>  
+            <if test="clientName != null  and clientName != ''"> and client_name like concat('%', #{clientName}, '%')</if>
+            <if test="clientType != null "> and client_type = #{clientType}</if>
+            <if test="industryId != null "> and industry_id = #{industryId}</if>
+            <if test="logo != null  and logo != ''"> and logo = #{logo}</if>
+            <if test="website != null  and website != ''"> and website = #{website}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="tel != null  and tel != ''"> and tel = #{tel}</if>
+            <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
+            <if test="bankAccount != null  and bankAccount != ''"> and bank_account = #{bankAccount}</if>
+            <if test="bank != null  and bank != ''"> and bank = #{bank}</if>
+            <if test="contact != null  and contact != ''"> and contact = #{contact}</if>
+            <if test="mobile != null  and mobile != ''"> and mobile = #{mobile}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="source != null  and source != ''"> and source = #{source}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="loginName != null  and loginName != ''"> and login_name like concat('%', #{loginName}, '%')</if>
+            <if test="support != null  and support != ''"> and support = #{support}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="opputunityDate != null "> and opputunity_date = #{opputunityDate}</if>
+            <if test="projectEta != null "> and project_eta = #{projectEta}</if>
+            <if test="productEta != null "> and product_eta = #{productEta}</if>
+            <if test="serviceEta != null "> and service_eta = #{serviceEta}</if>
+            <if test="projectEtdate != null "> and project_etdate = #{projectEtdate}</if>
+        </where>
+    </select>
+    
+    <select id="selectBusinessClientsByClientId" parameterType="Long" resultMap="BusinessClientsResult">
+        <include refid="selectBusinessClientsVo"/>
+        where client_id = #{clientId}
+    </select>
+
+    <select id="selectBusinessClientsByClientName" parameterType="String" resultMap="BusinessClientsResult">
+        <include refid="selectBusinessClientsVo"/>
+        where client_name = #{clientName}
+    </select>
+        
+    <insert id="insertBusinessClients" parameterType="BusinessClients" useGeneratedKeys="true" keyProperty="clientId">
+        insert into business_clients
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="clientName != null">client_name,</if>
+            <if test="clientType != null">client_type,</if>
+            <if test="industryId != null">industry_id,</if>
+            <if test="logo != null">logo,</if>
+            <if test="website != null">website,</if>
+            <if test="address != null">address,</if>
+            <if test="tel != null">tel,</if>
+            <if test="taxCode != null">tax_code,</if>
+            <if test="bankAccount != null">bank_account,</if>
+            <if test="bank != null">bank,</if>
+            <if test="contact != null">contact,</if>
+            <if test="mobile != null">mobile,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="source != null">source,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="loginName != null">login_name,</if>
+            <if test="support != null">support,</if>
+            <if test="status != null">status,</if>
+            <if test="opputunityDate != null">opputunity_date,</if>
+            <if test="projectEta != null">project_eta,</if>
+            <if test="productEta != null">product_eta,</if>
+            <if test="serviceEta != null">service_eta,</if>
+            <if test="projectEtdate != null">project_etdate,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="clientName != null">#{clientName},</if>
+            <if test="clientType != null">#{clientType},</if>
+            <if test="industryId != null">#{industryId},</if>
+            <if test="logo != null">#{logo},</if>
+            <if test="website != null">#{website},</if>
+            <if test="address != null">#{address},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="taxCode != null">#{taxCode},</if>
+            <if test="bankAccount != null">#{bankAccount},</if>
+            <if test="bank != null">#{bank},</if>
+            <if test="contact != null">#{contact},</if>
+            <if test="mobile != null">#{mobile},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="source != null">#{source},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="loginName != null">#{loginName},</if>
+            <if test="support != null">#{support},</if>
+            <if test="status != null">#{status},</if>
+            <if test="opputunityDate != null">#{opputunityDate},</if>
+            <if test="projectEta != null">#{projectEta},</if>
+            <if test="productEta != null">#{productEta},</if>
+            <if test="serviceEta != null">#{serviceEta},</if>
+            <if test="projectEtdate != null">#{projectEtdate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBusinessClients" parameterType="BusinessClients">
+        update business_clients
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="clientName != null">client_name = #{clientName},</if>
+            <if test="clientType != null">client_type = #{clientType},</if>
+            <if test="industryId != null">industry_id = #{industryId},</if>
+            <if test="logo != null">logo = #{logo},</if>
+            <if test="website != null">website = #{website},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="tel != null">tel = #{tel},</if>
+            <if test="taxCode != null">tax_code = #{taxCode},</if>
+            <if test="bankAccount != null">bank_account = #{bankAccount},</if>
+            <if test="bank != null">bank = #{bank},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="mobile != null">mobile = #{mobile},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="source != null">source = #{source},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="loginName != null">login_name = #{loginName},</if>
+            <if test="support != null">support = #{support},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="opputunityDate != null">opputunity_date = #{opputunityDate},</if>
+            <if test="projectEta != null">project_eta = #{projectEta},</if>
+            <if test="productEta != null">product_eta = #{productEta},</if>
+            <if test="serviceEta != null">service_eta = #{serviceEta},</if>
+            <if test="projectEtdate != null">project_etdate = #{projectEtdate},</if>
+        </trim>
+        where client_id = #{clientId}
+    </update>
+
+    <delete id="deleteBusinessClientsByClientId" parameterType="Long">
+        delete from business_clients where client_id = #{clientId}
+    </delete>
+
+    <delete id="deleteBusinessClientsByClientIds" parameterType="String">
+        delete from business_clients where client_id in 
+        <foreach item="clientId" collection="array" open="(" separator="," close=")">
+            #{clientId}
+        </foreach>
+    </delete>
+
+</mapper>

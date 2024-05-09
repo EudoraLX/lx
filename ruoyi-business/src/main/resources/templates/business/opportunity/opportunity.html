@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('商机列列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>客户：</label>
+                                <input type="text" name="clients.clientName"/>
+                            </li>
+                            <li>
+                                <label>销售人员：</label>
+                                <input type="text" name="salesperson"/>
+                            </li>
+                            <li>
+                                <label>商机来源：</label>
+                                <input type="text" name="opportunitySource"/>
+                            </li>
+                            <li>
+                                <label>商机开始日期：</label>
+                                <input type="text" class="time-input" placeholder="请选择商机开始日期" name="opportunityDate"/>
+                            </li>
+                            <li>
+                                <label>项目预计金额：</label>
+                                <input type="text" name="projectEstimatedAmount"/>
+                            </li>
+                            <li>
+                                <label>产品预计金额：</label>
+                                <input type="text" name="productEstimatedAmount"/>
+                            </li>
+                            <li>
+                                <label>服务预计金额：</label>
+                                <input type="text" name="serviceEstimatedAmount"/>
+                            </li>
+                            <li>
+                                <label>项目预计日期：</label>
+                                <input type="text" class="time-input" placeholder="请选择项目预计日期" name="projectEstimatedDate"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="business:opportunity:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="business:opportunity:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:opportunity:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="business:opportunity:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('business:opportunity:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('business:opportunity:remove')}]];
+        var prefix = ctx + "business/opportunity";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "商机列",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'opportunityId',
+                    title: '商机ID',
+                    visible: false
+                },
+                {
+                    field: 'clients.clientName',
+                    title: '客户'
+                },
+                {
+                    field: 'opportunityDescription',
+                    title: '商机描述'
+                },
+                {
+                    field: 'salesperson',
+                    title: '销售人员'
+                },
+                {
+                    field: 'opportunitySource',
+                    title: '商机来源'
+                },
+                {
+                    field: 'opportunityDate',
+                    title: '商机开始日期'
+                },
+                {
+                    field: 'projectEstimatedAmount',
+                    title: '项目预计金额'
+                },
+                {
+                    field: 'productEstimatedAmount',
+                    title: '产品预计金额'
+                },
+                {
+                    field: 'serviceEstimatedAmount',
+                    title: '服务预计金额'
+                },
+                {
+                    field: 'projectEstimatedDate',
+                    title: '项目预计日期'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.opportunityId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.opportunityId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

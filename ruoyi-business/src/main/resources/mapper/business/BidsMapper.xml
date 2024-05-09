@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.BidsMapper">
+    
+    <resultMap type="Bids" id="BidsResult">
+        <result property="bidId"    column="bid_id"    />
+        <result property="opportunityId"    column="opportunity_id"    />
+        <result property="bidResult"    column="bid_result"    />
+        <result property="bidMethod"    column="bid_method"    />
+        <result property="totalServiceDuration"    column="total_service_duration"    />
+        <result property="creationTime"    column="creation_time"    />
+        <association property="clients"  javaType="BusinessClients"  resultMap="BusinessClientsResult" />
+    </resultMap>
+
+    <resultMap type="BusinessClients" id="BusinessClientsResult">
+        <id property="clientId"    column="client_id"    />
+        <result property="clientName"    column="client_name"    />
+        <result property="status"    column="client_status" />
+    </resultMap>
+
+    <sql id="selectBidsVo">
+        select b.bid_id, b.opportunity_id, b.bid_result, b.bid_method, b.total_service_duration, b.creation_time,
+               o.client_id as client_id,
+               bc.client_name as client_name
+        from Bids b
+                left join opportunity o on o.opportunity_id = b.opportunity_id
+                 left join business_clients bc on bc.client_id = o.client_id
+    </sql>
+
+    <select id="selectBidsList" parameterType="Bids" resultMap="BidsResult">
+        <include refid="selectBidsVo"/>
+        <where>  
+            <if test="opportunityId != null "> and opportunity_id = #{opportunityId}</if>
+            <if test="bidResult != null  and bidResult != ''"> and bid_result = #{bidResult}</if>
+            <if test="bidMethod != null  and bidMethod != ''"> and bid_method = #{bidMethod}</if>
+            <if test="totalServiceDuration != null "> and total_service_duration = #{totalServiceDuration}</if>
+            <if test="creationTime != null "> and creation_time = #{creationTime}</if>
+            <if test="clients.clientName != null "> and bc.client_name like concat('%', #{clients.clientName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectBidsByBidId" parameterType="Long" resultMap="BidsResult">
+        <include refid="selectBidsVo"/>
+        where bid_id = #{bidId}
+    </select>
+        
+    <insert id="insertBids" parameterType="Bids" useGeneratedKeys="true" keyProperty="bidId">
+        insert into bids
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="opportunityId != null">opportunity_id,</if>
+            <if test="bidResult != null">bid_result,</if>
+            <if test="bidMethod != null">bid_method,</if>
+            <if test="totalServiceDuration != null">total_service_duration,</if>
+            <if test="creationTime != null">creation_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="opportunityId != null">#{opportunityId},</if>
+            <if test="bidResult != null">#{bidResult},</if>
+            <if test="bidMethod != null">#{bidMethod},</if>
+            <if test="totalServiceDuration != null">#{totalServiceDuration},</if>
+            <if test="creationTime != null">#{creationTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBids" parameterType="Bids">
+        update bids
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="opportunityId != null">opportunity_id = #{opportunityId},</if>
+            <if test="bidResult != null">bid_result = #{bidResult},</if>
+            <if test="bidMethod != null">bid_method = #{bidMethod},</if>
+            <if test="totalServiceDuration != null">total_service_duration = #{totalServiceDuration},</if>
+            <if test="creationTime != null">creation_time = #{creationTime},</if>
+        </trim>
+        where bid_id = #{bidId}
+    </update>
+
+    <delete id="deleteBidsByBidId" parameterType="Long">
+        delete from bids where bid_id = #{bidId}
+    </delete>
+
+    <delete id="deleteBidsByBidIds" parameterType="String">
+        delete from bids where bid_id in 
+        <foreach item="bidId" collection="array" open="(" separator="," close=")">
+            #{bidId}
+        </foreach>
+    </delete>
+
+</mapper>

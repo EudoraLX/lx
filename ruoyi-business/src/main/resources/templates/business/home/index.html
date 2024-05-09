@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:include="include :: header('Schedule Planner')" />
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Schedule Planner</h5>
+                </div>
+                <div class="ibox-content">
+                    <form id="scheduleForm">
+                        <label for="customerName">Customer Name:</label>
+                        <input list="nameOptions" type="text" id="customerName" name="customerName"><br><br>
+                        <datalist id="nameOptions">
+                        </datalist>
+                        <label for="scheduleDate">Schedule Date:</label>
+                        <input type="date" id="scheduleDate" name="scheduleDate"><br><br>
+                        <label for="scheduleDescription">Description:</label><br>
+                        <textarea id="scheduleDescription" name="scheduleDescription" rows="4" style="width: 50vh"></textarea><br><br>
+                        <input type="submit" value="Create Schedule">
+                    </form>
+                </div>
+            </div>
+
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5 style="width: 100%">Top List
+                        <a href="../../business/schedules" style="float: right; font-size: xx-small;">View All</a>
+                    </h5>
+                </div>
+                <div class="ibox-content" >
+                    <div id='eventList'></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="ibox" style="width: 100vh;">
+                <div class="ibox-title">
+                    <h5>Calendar</h5>
+                </div>
+                <div class="ibox-content" >
+                    <div id='calendar'></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var eventListEl = document.getElementById('eventList');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            initialDate: '2024-05-01',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: [],
+            eventClick: function (info) {
+                alert('详细描述: ' + info.event.title);
+            }
+        });
+
+        calendar.render();
+
+        // Function to update the event list
+        function updateEventList(events) {
+            $(eventListEl).empty(); // Clear previous list
+            var currentDate = new Date();
+            var filteredEvents = events.filter(function(event) {
+                return new Date(event.start) >= currentDate;
+            });
+            filteredEvents.forEach(function(event) {
+                var eventDate = new Date(event.start);
+                var eventDateOnly = eventDate.toISOString().split('T')[0];
+                $(eventListEl).append('<p>'+ eventDateOnly + ' :  ' + event.title + '</p>');
+            });
+        }
+
+        // Function to fetch events via AJAX
+        function fetchEventsAndRender() {
+            $.ajax({
+                type: "POST",
+                url: "schedules/getList",
+                contentType: "application/json",
+                dataType: "json",
+                success: function(response) {
+                    if (response) {
+                        var schedules = response;
+                        var events = [];
+                        for (var i = 0; i < schedules.length; i++) {
+                            var schedule = schedules[i];
+                            events.push({
+                                title: schedule.scheduleDescription,
+                                start: schedule.scheduleDate
+                            });
+                        }
+                        calendar.addEventSource(events);
+                        updateEventList(events);
+                    } else {
+                        alert('响应不是 JSON 或为空');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("获取日程时发生错误：" + error);
+                }
+            });
+        }
+
+        // Fetch events and render on calendar
+        fetchEventsAndRender();
+    });
+    $('#scheduleForm').submit(function(event){
+        // 防止表单默认提交行为
+        event.preventDefault();
+        // 获取表单数据
+        var clientName = $('#customerName').val();
+        var scheduleDate = $('#scheduleDate').val();
+        var scheduleDescription = $('#scheduleDescription').val();
+
+        // 发送AJAX请求
+        $.ajax({
+            url: 'schedules/indexAdd',
+            type: 'POST',
+            data: {
+                clientName: clientName,
+                scheduleDate: scheduleDate,
+                scheduleDescription: scheduleDescription
+            },
+            success: function(response){
+                alert(response);
+            },
+            error: function(xhr, textStatus, errorThrown){
+                alert('Error creating schedule: ' + xhr.responseText);
+            }
+        });
+    });
+
+</script>
+</body>
+</html>
