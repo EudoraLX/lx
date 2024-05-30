@@ -288,7 +288,7 @@
                                                     <ul>
                                                         <li>
                                                             <label>客户：</label>
-                                                            <input th:field="*{clientName}" class="form-control" type="text"/>
+                                                            <input id="clientName" th:field="*{clientName}" class="form-control" type="text"/>
                                                         </li>
                                                         <li>
                                                             <label>服务人员：</label>
@@ -308,7 +308,7 @@
                                                         </li>
                                                         <li>
                                                             <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
-                                                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                                                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()" ><i class="fa fa-refresh"></i>&nbsp;重置</a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -364,12 +364,14 @@
         autoclose: true
     });
 
+    var inputElement = document.getElementById('clientName');
+    var clientName = inputElement.value;
     var editFlag = [[${@permission.hasPermi('business:aftersales:edit')}]];
     var removeFlag = [[${@permission.hasPermi('business:aftersales:remove')}]];
     var prefix = ctx + "business/aftersales";
     $(function() {
         var options = {
-            url: prefix + "/list",
+            url: prefix + "/list/" + clientName,
             createUrl: prefix + "/add",
             updateUrl: prefix + "/edit/{id}",
             removeUrl: prefix + "/remove",

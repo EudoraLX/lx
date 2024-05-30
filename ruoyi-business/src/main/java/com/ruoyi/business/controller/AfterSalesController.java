@@ -3,6 +3,7 @@ package com.ruoyi.business.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ruoyi.business.domain.BusinessClients;
 import com.ruoyi.business.service.IBusinessClientsService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,19 @@ public class AfterSalesController extends BaseController
     public TableDataInfo list(AfterSales afterSales)
     {
         startPage();
+        List<AfterSales> list = afterSalesService.selectAfterSalesList(afterSales);
+        return getDataTable(list);
+    }
+
+    @RequiresPermissions("business:aftersales:list")
+    @PostMapping("/list/{clientName}")
+    @ResponseBody
+    public TableDataInfo listSchedule(AfterSales afterSales, @PathVariable String clientName)
+    {
+        startPage();
+        if(clientName != null){
+            afterSales.setClients(businessClientsService.selectBusinessClientsByClientName(clientName));
+        }
         List<AfterSales> list = afterSalesService.selectAfterSalesList(afterSales);
         return getDataTable(list);
     }
