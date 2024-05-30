@@ -39,6 +39,7 @@
             <if test="afterSalesDescription != null  and afterSalesDescription != ''"> and after_sales_description = #{afterSalesDescription}</if>
             <if test="afterSalesResult != null  and afterSalesResult != ''"> and after_sales_result = #{afterSalesResult}</if>
             <if test="creationTime != null "> and creation_time = #{creationTime}</if>
+            <if test="clients.clientName != null "> and c.client_name like concat('%', #{clients.clientName}, '%')</if>
         </where>
     </select>
 
