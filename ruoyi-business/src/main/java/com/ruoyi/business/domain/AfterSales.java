@@ -125,6 +125,10 @@ public class AfterSales extends BaseEntity
     }
 
     public BusinessClients getClients() {
+        if(clients == null)
+        {
+            clients = new BusinessClients();
+        }
         return clients;
     }
 
@@ -143,6 +147,7 @@ public class AfterSales extends BaseEntity
                 .append("afterSalesDescription", getAfterSalesDescription())
                 .append("afterSalesResult", getAfterSalesResult())
                 .append("creationTime", getCreationTime())
+                .append("clients", getClients())
                 .toString();
     }
 }
