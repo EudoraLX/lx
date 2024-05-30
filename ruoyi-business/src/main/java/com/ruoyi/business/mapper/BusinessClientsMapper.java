@@ -59,4 +59,6 @@ public interface BusinessClientsMapper
      * @return 结果
      */
     public int deleteBusinessClientsByClientIds(String[] clientIds);
+
+    public List<String> getAllClients();
 }

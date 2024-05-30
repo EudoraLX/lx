@@ -1,57 +1,91 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.business.mapper.AfterSalesMapper">
-    
+
     <resultMap type="AfterSales" id="AfterSalesResult">
         <result property="afterSalesId"    column="after_sales_id"    />
         <result property="clientId"    column="client_id"    />
-
+        <result property="servicePersonnel"    column="service_personnel"    />
+        <result property="serviceDuration"    column="service_duration"    />
+        <result property="remainingDuration"    column="remaining_duration"    />
         <result property="afterSalesDescription"    column="after_sales_description"    />
         <result property="afterSalesResult"    column="after_sales_result"    />
         <result property="creationTime"    column="creation_time"    />
+        <association property="clients"  javaType="BusinessClients"  resultMap="BusinessClientsResult" />
+    </resultMap>
+
+    <resultMap type="BusinessClients" id="BusinessClientsResult">
+        <id property="clientId"    column="client_id"    />
+        <result property="clientName"    column="client_name"    />
+        <result property="status"    column="client_status" />
     </resultMap>
 
     <sql id="selectAfterSalesVo">
-        select after_sales_id, opportunity_id, after_sales_description, after_sales_result, creation_time from after_sales
+        select a.after_sales_id, a.client_id, a.service_personnel, a.service_duration, a.remaining_duration, a.after_sales_description, a.after_sales_result, a.creation_time ,
+            c.client_name as client_name
+        from after_sales a
+            left join business_clients c on a.client_id = c.client_id
     </sql>
 
     <select id="selectAfterSalesList" parameterType="AfterSales" resultMap="AfterSalesResult">
         <include refid="selectAfterSalesVo"/>
-        <where>  
-            <if test="opportunityId != null "> and opportunity_id = #{opportunityId}</if>
+        <where>
+            <if test="clientId != null "> and client_id = #{clientId}</if>
+            <if test="servicePersonnel != null  and servicePersonnel != ''"> and service_personnel = #{servicePersonnel}</if>
+            <if test="serviceDuration != null "> and service_duration = #{serviceDuration}</if>
+            <if test="remainingDuration != null "> and remaining_duration = #{remainingDuration}</if>
             <if test="afterSalesDescription != null  and afterSalesDescription != ''"> and after_sales_description = #{afterSalesDescription}</if>
             <if test="afterSalesResult != null  and afterSalesResult != ''"> and after_sales_result = #{afterSalesResult}</if>
             <if test="creationTime != null "> and creation_time = #{creationTime}</if>
         </where>
     </select>
-    
+
     <select id="selectAfterSalesByAfterSalesId" parameterType="Long" resultMap="AfterSalesResult">
         <include refid="selectAfterSalesVo"/>
         where after_sales_id = #{afterSalesId}
     </select>
-        
+
+<!--    <select id="selectAfterSalesByClientName" parameterType="java.lang.String" resultMap="AfterSalesResult">-->
+<!--        <include refid="selectAfterSalesVo"/>-->
+<!--        <where>-->
+<!--            <if test="clients.clientName != null "> and c.client_name like concat('%', #{clients.clientName}, '%')</if>-->
+<!--        </where>-->
+<!--    </select>-->
+
     <insert id="insertAfterSales" parameterType="AfterSales" useGeneratedKeys="true" keyProperty="afterSalesId">
+        <selectKey keyProperty="clientId" resultType="long" order="BEFORE">
+            SELECT client_id FROM business_clients WHERE client_name = #{clients.clientName}
+        </selectKey>
         insert into after_sales
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="opportunityId != null">opportunity_id,</if>
+            <if test="clientId != null">client_id,</if>
+            <if test="servicePersonnel != null and servicePersonnel != ''">service_personnel,</if>
+            <if test="serviceDuration != null">service_duration,</if>
+            <if test="remainingDuration != null">remaining_duration,</if>
             <if test="afterSalesDescription != null">after_sales_description,</if>
             <if test="afterSalesResult != null">after_sales_result,</if>
             <if test="creationTime != null">creation_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="opportunityId != null">#{opportunityId},</if>
+            <if test="clientId != null">#{clientId},</if>
+            <if test="servicePersonnel != null and servicePersonnel != ''">#{servicePersonnel},</if>
+            <if test="serviceDuration != null">#{serviceDuration},</if>
+            <if test="remainingDuration != null">#{remainingDuration},</if>
             <if test="afterSalesDescription != null">#{afterSalesDescription},</if>
             <if test="afterSalesResult != null">#{afterSalesResult},</if>
             <if test="creationTime != null">#{creationTime},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateAfterSales" parameterType="AfterSales">
         update after_sales
         <trim prefix="SET" suffixOverrides=",">
-            <if test="opportunityId != null">opportunity_id = #{opportunityId},</if>
+            <if test="clientId != null">client_id = #{clientId},</if>
+            <if test="servicePersonnel != null and servicePersonnel != ''">service_personnel = #{servicePersonnel},</if>
+            <if test="serviceDuration != null">service_duration = #{serviceDuration},</if>
+            <if test="remainingDuration != null">remaining_duration = #{remainingDuration},</if>
             <if test="afterSalesDescription != null">after_sales_description = #{afterSalesDescription},</if>
             <if test="afterSalesResult != null">after_sales_result = #{afterSalesResult},</if>
             <if test="creationTime != null">creation_time = #{creationTime},</if>
@@ -64,7 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteAfterSalesByAfterSalesIds" parameterType="String">
-        delete from after_sales where after_sales_id in 
+        delete from after_sales where after_sales_id in
         <foreach item="afterSalesId" collection="array" open="(" separator="," close=")">
             #{afterSalesId}
         </foreach>

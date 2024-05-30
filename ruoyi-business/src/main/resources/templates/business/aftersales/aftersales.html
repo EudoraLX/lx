@@ -11,8 +11,16 @@
                     <div class="select-list">
                         <ul>
                             <li>
-                                <label>商机ID:</label>
-                                <input type="text" name="opportunityId"/>
+                                <label>客户：</label>
+                                <input type="text" name="clients.clientName"/>
+                            </li>
+                            <li>
+                                <label>服务人员：</label>
+                                <input type="text" name="servicePersonnel"/>
+                            </li>
+                            <li>
+                                <label>服务时长：</label>
+                                <input type="text" name="serviceDuration"/>
                             </li>
                             <li>
                                 <label>售后结果：</label>
@@ -70,11 +78,19 @@
                 {
                     field: 'afterSalesId',
                     title: '售后ID',
-                    visible: true
+                    visible: false
                 },
                 {
-                    field: 'opportunityId',
-                    title: '商机ID'
+                    field: 'clients.clientName',
+                    title: '客户'
+                },
+                {
+                    field: 'servicePersonnel',
+                    title: '服务人员'
+                },
+                {
+                    field: 'serviceDuration',
+                    title: '服务时长'
                 },
                 {
                     field: 'afterSalesDescription',

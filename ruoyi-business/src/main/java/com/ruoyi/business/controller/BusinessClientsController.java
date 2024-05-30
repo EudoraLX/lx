@@ -124,4 +124,8 @@ public class BusinessClientsController extends BaseController
     {
         return toAjax(businessClientsService.deleteBusinessClientsByClientIds(ids));
     }
+
+    public List<String> getAllClient(){
+        return businessClientsService.getAllClients();
+    }
 }

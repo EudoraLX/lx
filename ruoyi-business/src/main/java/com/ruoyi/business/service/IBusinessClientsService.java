@@ -60,4 +60,6 @@ public interface IBusinessClientsService
      * @return 结果
      */
     public int deleteBusinessClientsByClientId(Long clientId);
+
+    public List<String> getAllClients();
 }

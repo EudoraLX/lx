@@ -1,15 +1,14 @@
 package com.ruoyi.business.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.ruoyi.business.service.IBusinessClientsService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.business.domain.AfterSales;
@@ -21,9 +20,9 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 售后记录Controller
- * 
+ *
  * @author Eudora
- * @date 2024-04-19
+ * @date 2024-05-13
  */
 @Controller
 @RequestMapping("/business/aftersales")
@@ -33,6 +32,9 @@ public class AfterSalesController extends BaseController
 
     @Autowired
     private IAfterSalesService afterSalesService;
+
+    @Autowired
+    private IBusinessClientsService businessClientsService;
 
     @RequiresPermissions("business:aftersales:view")
     @GetMapping()
@@ -50,17 +52,6 @@ public class AfterSalesController extends BaseController
     public TableDataInfo list(AfterSales afterSales)
     {
         startPage();
-        List<AfterSales> list = afterSalesService.selectAfterSalesList(afterSales);
-        return getDataTable(list);
-    }
-
-    @RequiresPermissions("business:aftersales:list")
-    @PostMapping("/list/{id}")
-    @ResponseBody
-    public TableDataInfo clientList(@PathVariable("id") Long id,AfterSales afterSales)
-    {
-        startPage();
-        afterSales.setOpportunityId(id);
         List<AfterSales> list = afterSalesService.selectAfterSalesList(afterSales);
         return getDataTable(list);
     }
@@ -134,5 +125,18 @@ public class AfterSalesController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(afterSalesService.deleteAfterSalesByAfterSalesIds(ids));
+    }
+
+
+    @GetMapping("/collection")
+    @ResponseBody
+    public AjaxResult collection(@RequestParam String wd) {
+        List<String> allClients = businessClientsService.getAllClients();
+        String[] array = allClients.stream()
+                .filter(client -> client.contains(wd)).toArray(String[]::new);
+        AjaxResult ajax = new AjaxResult();
+        ajax.put("value", array);
+        ajax.put("length", array.length);
+        return ajax;
     }
 }

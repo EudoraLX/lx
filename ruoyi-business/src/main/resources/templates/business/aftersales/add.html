@@ -8,12 +8,20 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-aftersales-add">
             <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">商机ID，关联到Opportunity表的OpportunityID：</label>
+                <label class="col-sm-3 control-label is-required">客户：</label>
                 <div class="col-sm-8">
-                    <input name="opportunityId" class="form-control" type="text" required>
+                    <input name="clients.clientName" class="form-control" type="text" required>
                 </div>
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="suggest-demo-3">
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">服务人员：</label>
+<!--                <div class="col-sm-8">-->
+<!--                    <input name="servicePersonnel" class="form-control" type="text" required id="service-person">-->
+<!--                    <select id="nameList"></select>-->
+<!--                </div>-->
+                <div class="col-sm-8" style="width: 400px;">
+                    <div class="input-group ">
+                        <input name="servicePersonnel" type="text" class="form-control" id="service-person">
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-white dropdown-toggle" style="height: 31px" data-toggle="dropdown">
                                 <span class="caret"></span>
@@ -21,8 +29,14 @@
                             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                             </ul>
                         </div>
-                        <!-- /btn-group -->
                     </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">服务时长：</label>
+                <div class="col-sm-8">
+                    <input name="serviceDuration" class="form-control" type="text">
+                </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">售后描述：</label>
@@ -49,15 +63,64 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
+    <th:block th:include="include :: bootstrap-typeahead-js" />
     <th:block th:include="include :: bootstrap-suggest-js" />
     <script th:inline="javascript">
         var prefix = ctx + "business/aftersales"
+        var validValues = [];
+
         $("#form-aftersales-add").validate({
             focusCleanup: true
         });
 
+        // $.get("collection", function(data) {
+        //     validValues = data.value;
+        //     $("#service-person").typeahead({
+        //         source: validValues
+        //     });
+        // }, 'json');
+        var servicePersonBsSuggest = $("#service-person").bsSuggest({
+            indexId: 1,
+            indexKey: 0,
+            allowNoKeyword: true,      // 是否允许无关键字时请求数据
+            hideOnSelect: true,         // 鼠标从列表单击选择了值时，是否隐藏选择列表
+            multiWord: true,            // 以分隔符号分割的多关键字支持
+            separator: ",",             // 多关键字支持时的分隔符，默认为空格
+            getDataMethod: "url",       // 获取数据的方式，总是从 URL 获取
+            url: 'collection?wd=',
+            effectiveFieldsAlias: {
+                word: "名字",
+            },
+            processData: function(response) {
+                var i, len,data = {
+                    value: []
+                };
+                validValues=response.value;
+                len=response.length;
+                jsonStr = "{'value':[";
+                for (i = 0; i < len; i++) {
+                    data.value.push({
+                        "word": response.value[i]
+                    });
+                }
+                return data;
+            },
+        });
+
+        function isSubset(arrayA, arrayB) {
+            return arrayB.every(function(item) {
+                return arrayA.includes(item);
+            });
+        }
         function submitHandler() {
             if ($.validate.form()) {
+                var inputValue = $("#service-person").val().split(",");
+                console.log(validValues+":"+isSubset(validValues,inputValue)+":"+inputValue)
+                if (!isSubset(validValues,inputValue)) {
+                    $(this).val("");
+                    alert("没有该成员，请重新输入服务人员！");
+                    return;
+                }
                 $.operate.save(prefix + "/add", $('#form-aftersales-add').serialize());
             }
         }
@@ -68,46 +131,6 @@
             autoclose: true
         });
 
-
-        var testdataBsSuggest = $("#suggest-demo-3").bsSuggest({
-            indexId: 1,
-            indexKey: 2,
-            data: {
-                'value': [
-                    {
-                        'userId': '1',
-                        'userCode': '1000001',
-                        'userName': '测试1',
-                        'userPhone': '15888888888'
-                    },
-                    {
-                        'userId': '2',
-                        'userCode': '1000002',
-                        'userName': '测试2',
-                        'userPhone': '15888888888'
-                    },
-                    {
-                        'userId': '3',
-                        'userCode': '1000003',
-                        'userName': '测试3',
-                        'userPhone': '15888888888'
-                    },
-                    {
-                        'userId': '4',
-                        'userCode': '1000004',
-                        'userName': '测试4',
-                        'userPhone': '15888888888'
-                    },
-                    {
-                        'userId': '5',
-                        'userCode': '1000005',
-                        'userName': '测试5',
-                        'userPhone': '15888888888'
-                    }
-                ],
-                'defaults': '1'
-            }
-        });
     </script>
 </body>
 </html>

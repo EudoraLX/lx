@@ -184,5 +184,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{clientId}
         </foreach>
     </delete>
+    <select id="getAllClients" resultType="java.lang.String">
+        SELECT client_name
+        FROM business_clients;
+    </select>
+
 
 </mapper>

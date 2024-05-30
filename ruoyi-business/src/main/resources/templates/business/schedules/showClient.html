@@ -283,12 +283,20 @@
                                 <div class="container-div">
                                     <div class="row">
                                         <div class="col-sm-12 search-collapse">
-                                            <form id="formId" th:object="${afterSales}">
+                                            <form id="formId" th:object="${businessClients}">
                                                 <div class="select-list">
                                                     <ul>
-                                                        <li hidden="hidden">
-                                                            <label>商机ID:</label>
-                                                            <input type="text" name="opportunityId" th:field="*{opportunityId}" />
+                                                        <li>
+                                                            <label>客户：</label>
+                                                            <input th:field="*{clientName}" class="form-control" type="text"/>
+                                                        </li>
+                                                        <li>
+                                                            <label>服务人员：</label>
+                                                            <input type="text" name="servicePersonnel"/>
+                                                        </li>
+                                                        <li>
+                                                            <label>服务时长：</label>
+                                                            <input type="text" name="serviceDuration"/>
                                                         </li>
                                                         <li>
                                                             <label>售后结果：</label>
@@ -322,7 +330,7 @@
                                             </a>
                                         </div>
                                         <div class="col-sm-12 select-table table-striped">
-                                            <table id="afterSales-table" th:name="${afterSales.opportunityId}"></table>
+                                            <table id="afterSales-table" ></table>
                                         </div>
                                     </div>
                                 </div>
@@ -356,13 +364,12 @@
         autoclose: true
     });
 
-    var oppId=document.getElementsByName('opportunityId')[0].value;
     var editFlag = [[${@permission.hasPermi('business:aftersales:edit')}]];
     var removeFlag = [[${@permission.hasPermi('business:aftersales:remove')}]];
     var prefix = ctx + "business/aftersales";
     $(function() {
         var options = {
-            url: prefix + "/list/"+oppId,
+            url: prefix + "/list",
             createUrl: prefix + "/add",
             updateUrl: prefix + "/edit/{id}",
             removeUrl: prefix + "/remove",
@@ -372,6 +379,23 @@
             columns: [{
                 checkbox: true
             },
+                {
+                    field: 'afterSalesId',
+                    title: '售后ID',
+                    visible: false
+                },
+                {
+                    field: 'clients.clientName',
+                    title: '客户'
+                },
+                {
+                    field: 'servicePersonnel',
+                    title: '服务人员'
+                },
+                {
+                    field: 'serviceDuration',
+                    title: '服务时长'
+                },
                 {
                     field: 'afterSalesDescription',
                     title: '售后描述'

@@ -1,5 +1,6 @@
 package com.ruoyi.business.service.impl;
 
+import java.math.BigInteger;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,19 +11,19 @@ import com.ruoyi.common.core.text.Convert;
 
 /**
  * 售后记录Service业务层处理
- * 
+ *
  * @author Eudora
- * @date 2024-04-19
+ * @date 2024-05-13
  */
 @Service
-public class AfterSalesServiceImpl implements IAfterSalesService 
+public class AfterSalesServiceImpl implements IAfterSalesService
 {
     @Autowired
     private AfterSalesMapper afterSalesMapper;
 
     /**
      * 查询售后记录
-     * 
+     *
      * @param afterSalesId 售后记录主键
      * @return 售后记录
      */
@@ -34,7 +35,7 @@ public class AfterSalesServiceImpl implements IAfterSalesService
 
     /**
      * 查询售后记录列表
-     * 
+     *
      * @param afterSales 售后记录
      * @return 售后记录
      */
@@ -44,10 +45,9 @@ public class AfterSalesServiceImpl implements IAfterSalesService
         return afterSalesMapper.selectAfterSalesList(afterSales);
     }
 
-
     /**
      * 新增售后记录
-     * 
+     *
      * @param afterSales 售后记录
      * @return 结果
      */
@@ -59,7 +59,7 @@ public class AfterSalesServiceImpl implements IAfterSalesService
 
     /**
      * 修改售后记录
-     * 
+     *
      * @param afterSales 售后记录
      * @return 结果
      */
@@ -71,7 +71,7 @@ public class AfterSalesServiceImpl implements IAfterSalesService
 
     /**
      * 批量删除售后记录
-     * 
+     *
      * @param afterSalesIds 需要删除的售后记录主键
      * @return 结果
      */
@@ -83,7 +83,7 @@ public class AfterSalesServiceImpl implements IAfterSalesService
 
     /**
      * 删除售后记录信息
-     * 
+     *
      * @param afterSalesId 售后记录主键
      * @return 结果
      */

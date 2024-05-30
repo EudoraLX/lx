@@ -9,9 +9,9 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 售后记录对象 after_sales
- * 
+ *
  * @author Eudora
- * @date 2024-04-19
+ * @date 2024-05-13
  */
 public class AfterSales extends BaseEntity
 {
@@ -20,9 +20,23 @@ public class AfterSales extends BaseEntity
     /** 售后ID */
     private Long afterSalesId;
 
-    /** 商机ID，关联到Opportunity表的OpportunityID */
-    @Excel(name = "商机ID")
-    private Long opportunityId;
+    private BusinessClients clients;
+
+    /** 客户ID */
+    @Excel(name = "客户ID")
+    private Long clientId;
+
+    /** 服务人员 */
+    @Excel(name = "服务人员")
+    private String servicePersonnel;
+
+    /** 服务时长 */
+    @Excel(name = "服务时长")
+    private Long serviceDuration;
+
+    /** 剩余服务时长 */
+    @Excel(name = "剩余服务时长")
+    private Long remainingDuration;
 
     /** 售后描述 */
     @Excel(name = "售后描述")
@@ -37,60 +51,98 @@ public class AfterSales extends BaseEntity
     @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date creationTime;
 
-    public void setAfterSalesId(Long afterSalesId) 
+    public void setAfterSalesId(Long afterSalesId)
     {
         this.afterSalesId = afterSalesId;
     }
 
-    public Long getAfterSalesId() 
+    public Long getAfterSalesId()
     {
         return afterSalesId;
     }
-    public void setOpportunityId(Long opportunityId) 
+    public void setClientId(Long clientId)
     {
-        this.opportunityId = opportunityId;
+        this.clientId = clientId;
     }
 
-    public Long getOpportunityId() 
+    public Long getClientId()
     {
-        return opportunityId;
+        return clientId;
     }
-    public void setAfterSalesDescription(String afterSalesDescription) 
+    public void setServicePersonnel(String servicePersonnel)
+    {
+        this.servicePersonnel = servicePersonnel;
+    }
+
+    public String getServicePersonnel()
+    {
+        return servicePersonnel;
+    }
+    public void setServiceDuration(Long serviceDuration)
+    {
+        this.serviceDuration = serviceDuration;
+    }
+
+    public Long getServiceDuration()
+    {
+        return serviceDuration;
+    }
+    public void setRemainingDuration(Long remainingDuration)
+    {
+        this.remainingDuration = remainingDuration;
+    }
+
+    public Long getRemainingDuration()
+    {
+        return remainingDuration;
+    }
+    public void setAfterSalesDescription(String afterSalesDescription)
     {
         this.afterSalesDescription = afterSalesDescription;
     }
 
-    public String getAfterSalesDescription() 
+    public String getAfterSalesDescription()
     {
         return afterSalesDescription;
     }
-    public void setAfterSalesResult(String afterSalesResult) 
+    public void setAfterSalesResult(String afterSalesResult)
     {
         this.afterSalesResult = afterSalesResult;
     }
 
-    public String getAfterSalesResult() 
+    public String getAfterSalesResult()
     {
         return afterSalesResult;
     }
-    public void setCreationTime(Date creationTime) 
+    public void setCreationTime(Date creationTime)
     {
         this.creationTime = creationTime;
     }
 
-    public Date getCreationTime() 
+    public Date getCreationTime()
     {
         return creationTime;
+    }
+
+    public BusinessClients getClients() {
+        return clients;
+    }
+
+    public void setClients(BusinessClients clients) {
+        this.clients = clients;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("afterSalesId", getAfterSalesId())
-            .append("opportunityId", getOpportunityId())
-            .append("afterSalesDescription", getAfterSalesDescription())
-            .append("afterSalesResult", getAfterSalesResult())
-            .append("creationTime", getCreationTime())
-            .toString();
+                .append("afterSalesId", getAfterSalesId())
+                .append("clientId", getClientId())
+                .append("servicePersonnel", getServicePersonnel())
+                .append("serviceDuration", getServiceDuration())
+                .append("remainingDuration", getRemainingDuration())
+                .append("afterSalesDescription", getAfterSalesDescription())
+                .append("afterSalesResult", getAfterSalesResult())
+                .append("creationTime", getCreationTime())
+                .toString();
     }
 }

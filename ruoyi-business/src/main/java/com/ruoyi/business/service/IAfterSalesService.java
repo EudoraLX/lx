@@ -1,19 +1,20 @@
 package com.ruoyi.business.service;
 
+import java.math.BigInteger;
 import java.util.List;
 import com.ruoyi.business.domain.AfterSales;
 
 /**
  * 售后记录Service接口
- * 
+ *
  * @author Eudora
- * @date 2024-04-19
+ * @date 2024-05-13
  */
-public interface IAfterSalesService 
+public interface IAfterSalesService
 {
     /**
      * 查询售后记录
-     * 
+     *
      * @param afterSalesId 售后记录主键
      * @return 售后记录
      */
@@ -21,16 +22,15 @@ public interface IAfterSalesService
 
     /**
      * 查询售后记录列表
-     * 
+     *
      * @param afterSales 售后记录
      * @return 售后记录集合
      */
     public List<AfterSales> selectAfterSalesList(AfterSales afterSales);
 
-
     /**
      * 新增售后记录
-     * 
+     *
      * @param afterSales 售后记录
      * @return 结果
      */
@@ -38,7 +38,7 @@ public interface IAfterSalesService
 
     /**
      * 修改售后记录
-     * 
+     *
      * @param afterSales 售后记录
      * @return 结果
      */
@@ -46,7 +46,7 @@ public interface IAfterSalesService
 
     /**
      * 批量删除售后记录
-     * 
+     *
      * @param afterSalesIds 需要删除的售后记录主键集合
      * @return 结果
      */
@@ -54,7 +54,7 @@ public interface IAfterSalesService
 
     /**
      * 删除售后记录信息
-     * 
+     *
      * @param afterSalesId 售后记录主键
      * @return 结果
      */

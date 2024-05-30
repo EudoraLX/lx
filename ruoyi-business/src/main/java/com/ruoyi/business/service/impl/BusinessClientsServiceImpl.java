@@ -99,4 +99,11 @@ public class BusinessClientsServiceImpl implements IBusinessClientsService
     {
         return businessClientsMapper.deleteBusinessClientsByClientId(clientId);
     }
+
+    @Override
+    public List<String> getAllClients() {
+        return businessClientsMapper.getAllClients();
+    }
+
+
 }

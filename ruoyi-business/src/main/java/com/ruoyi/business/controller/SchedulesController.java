@@ -1,5 +1,6 @@
 package com.ruoyi.business.controller;
 
+import java.math.BigInteger;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -176,11 +177,9 @@ public class SchedulesController extends BaseController
         BusinessClients clients = businessClientsService.selectBusinessClientsByClientId(schedules.getClientId());
         Opportunity opportunity = opportunityService.selectOpportunityByOpportunityId(clients.getClientId());
         Bids bids = bidsService.selectBidsByBidId(opportunity.getOpportunityId());
-        AfterSales afterSales = afterSalesService.selectAfterSalesByAfterSalesId(opportunity.getOpportunityId());
         mmap.put("businessClients", clients);
         mmap.put("opportunity" , opportunity);
         mmap.put("bids", bids);
-        mmap.put("afterSales" , afterSales);
         return prefix + "/showClient";
     }
 
