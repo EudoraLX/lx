@@ -57,19 +57,6 @@ public class AfterSalesController extends BaseController
         return getDataTable(list);
     }
 
-    @RequiresPermissions("business:aftersales:list")
-    @PostMapping("/list/{clientName}")
-    @ResponseBody
-    public TableDataInfo listSchedule(AfterSales afterSales, @PathVariable String clientName)
-    {
-        startPage();
-        if(clientName != null){
-            afterSales.setClients(businessClientsService.selectBusinessClientsByClientName(clientName));
-        }
-        List<AfterSales> list = afterSalesService.selectAfterSalesList(afterSales);
-        return getDataTable(list);
-    }
-
     /**
      * 导出售后记录列表
      */
@@ -153,4 +140,15 @@ public class AfterSalesController extends BaseController
         ajax.put("length", array.length);
         return ajax;
     }
+
+    @GetMapping("/allArray")
+    @ResponseBody
+    public AjaxResult allArray() {
+        List<String> allClients = businessClientsService.getAllClients();
+        String[] allArray = allClients.toArray(new String[0]);
+        AjaxResult ajax = new AjaxResult();
+        ajax.put("allArray",allArray);
+        return ajax;
+    }
+
 }
