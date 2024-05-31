@@ -18,12 +18,18 @@
                 <h5>客户基本信息</h5>
             </div>
             <div class="ibox-content" style="height: 100vh">
-                <label for="customerName">ClientName:</label>
+                <label for="customerName">名称:</label>
                 <span id="customerName" th:text="${businessClients.clientName}" style="font-weight: bold"></span><br><br>
-                <label for="iphone"> Line-Phone:</label>
+                <label for="iphone"> 电话:</label>
                 <span id="iphone"  th:text="${businessClients.tel}" style="font-weight: bold"></span><br><br>
-                <label for="singingcompany">SigCompany:</label>
+                <label for="singingcompany">公司:</label>
                 <span id="singingcompany" th:text="${businessClients.deptId}" style="font-weight: bold"></span><br><br>
+                <label for="totalServiceDuration">总服务时长:</label>
+                <span id="totalServiceDuration" th:text="${bids.totalServiceDuration}" style="font-weight: bold"></span>  /人天<br><br>
+                <label for="serviceDuration">已服务时长:</label>
+                <span id="serviceDuration" th:text="${serviceSum}" style="font-weight: bold"></span>  /人天<br><br>
+                <label for="remainingServices">剩余服务时长:</label>
+                <span id="remainingServices" th:text="${bids.totalServiceDuration - serviceSum}"  style="font-weight: bold"></span>  /人天<br><br>
             </div>
         </div>
     </div>

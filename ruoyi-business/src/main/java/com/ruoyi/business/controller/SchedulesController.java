@@ -173,13 +173,22 @@ public class SchedulesController extends BaseController
     @GetMapping("/showClient/{id}")
     public String showClient(@PathVariable("id") Long scheduleId, ModelMap mmap)
     {
+        int serviceSum=0;
         Schedules schedules = schedulesService.selectSchedulesByScheduleId(scheduleId);
         BusinessClients clients = businessClientsService.selectBusinessClientsByClientId(schedules.getClientId());
         Opportunity opportunity = opportunityService.selectOpportunityByOpportunityId(clients.getClientId());
         Bids bids = bidsService.selectBidsByBidId(opportunity.getOpportunityId());
+        AfterSales afterSales = new AfterSales();
+        afterSales.setClients(clients);
+        List<AfterSales> afterSalesList=afterSalesService.selectAfterSalesList(afterSales);
+        for(AfterSales sale:afterSalesList)
+        {
+            serviceSum += sale.getServiceDuration();
+        }
         mmap.put("businessClients", clients);
         mmap.put("opportunity" , opportunity);
         mmap.put("bids", bids);
+        mmap.put("serviceSum",serviceSum);
         return prefix + "/showClient";
     }
 
