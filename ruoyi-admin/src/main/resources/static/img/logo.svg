@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="300" viewBox="0 0 800 300">
+  <!-- JACKY text -->
+  <text x="50" y="150" font-family="Arial" font-size="72" fill="#000" font-weight="bold">JACKY</text>
+  <!-- Heart -->
+  <text x="310" y="150" font-family="Arial" font-size="72" fill="#000">❤</text>
+  <!-- EUDORA text -->
+  <text x="400" y="150" font-family="Arial" font-size="72" fill="#000" font-weight="bold">EUDORA</text>
+</svg>
+

@@ -7050,3 +7050,23 @@ nav .logo {
 	z-index: 9998;
 	margin: 0;
 }
+
+
+.theme-line-0 {
+    --layer1: #202020;}
+
+.theme-line-2 {
+    --layer2: #202020;
+    --layer1: #202020;}
+
+.theme-line-4 {
+    --layer3: #202020;
+    --layer2: #202020;
+    --layer1: #202020;}
+
+.theme-line-15 {
+    --layer1: #202020;
+    --layer2: #202020;}
+
+.theme-line-35 {
+    --layer2: #202020;}
